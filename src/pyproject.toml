@@ -3,7 +3,7 @@ name = "smart-aircon"
 version = "0.1.0"
 description = "顔認証によるスマートエアコン制御 (演習7) — Raspberry Pi 5"
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 
 dependencies = [
     "numpy>=1.26",
@@ -18,8 +18,4 @@ pi = [
     "lgpio>=0.2 ; sys_platform == 'linux'",
     "adafruit-circuitpython-dht>=4.0 ; sys_platform == 'linux'",
     "adafruit-blinka>=8.0 ; sys_platform == 'linux'",
-]
-
-infer = [
-    "tflite-runtime>=2.13 ; sys_platform == 'linux'",
 ]
