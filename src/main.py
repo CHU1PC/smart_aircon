@@ -1,13 +1,23 @@
 from signal import pause
 
+import cv2
 from gpiozero import Button
 from loguru import logger
+
+from camera import capture_image
 
 button = Button(25, pull_up=False, bounce_time=0.1)
 
 
 def on_press() -> None:
     logger.info("Button pressed!")
+
+    try:
+        image = capture_image()
+        logger.info("Image captured successfully.")
+        cv2.imwrite("captured_image.jpg", image)  # Sample Code
+    except (ValueError, cv2.error) as e:
+        logger.error(f"Error capturing image: {e}")
 
 
 def main() -> None:
