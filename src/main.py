@@ -3,7 +3,7 @@ from signal import pause
 from gpiozero import Button
 from loguru import logger
 
-button = Button(17, pull_up=True, bounce_time=0.1)
+button = Button(25, pull_up=False, bounce_time=0.1)
 
 
 def on_press() -> None:
