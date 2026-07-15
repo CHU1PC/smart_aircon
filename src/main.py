@@ -6,10 +6,14 @@ from gpiozero import LED, Button
 from loguru import logger
 
 from recognition.recognize import recognize
+from temperature import DHT11, DHT11Error
 
 button = Button(25, pull_up=False, bounce_time=0.1)
 led = LED(22)
+dht = DHT11(14)
 _busy = threading.Lock()
+
+SETPOINTS = {"Tadashi": 25}
 
 
 def _handle_press() -> None:
@@ -17,9 +21,23 @@ def _handle_press() -> None:
     user_id, score = recognize()
     if user_id == "unknown":
         logger.info(f"Unknown face (score={score:.3f}).")
+        return
+
+    led.on()
+    logger.info(f"Recognized '{user_id}' (score={score:.3f}).")
+
+    try:
+        humidity, temperature = dht.read_data()
+    except DHT11Error as e:
+        logger.error(f"Temperature read failed: {e}")
+        return
+
+    setpoint = SETPOINTS.get(user_id, 25)
+    logger.info(f"Room {temperature}C (humidity {humidity}%), setpoint {setpoint}C.")
+    if temperature > setpoint:
+        logger.info("Cooling needed (SwitchBot pending).")
     else:
-        led.on()
-        logger.info(f"Recognized '{user_id}' (score={score:.3f}).")
+        logger.info("Within range; no action.")
 
 
 def on_press() -> None:
